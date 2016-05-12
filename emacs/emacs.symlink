@@ -1,9 +1,10 @@
 ;; Ryen's emacs config
+;; (global-git-gutter-mode +1)
 
 ;; MELPA
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")))
+             ("marmalade" . "http://marmalade-repo.org/packages/")
+             ("melpa" . "http://melpa.org/packages/")))
 
 ;; Set load path
 (let ((default-directory "~/.emacs.d/"))
@@ -20,13 +21,50 @@
 ;; switch
 (c-set-offset 'case-label '+)
 
+;; scss
+(setq scss-compile-at-save nil)
+(setq css-indent-offset 2)    
+
+;; whitespace
+; make carriage returns blue and tabs green
+;; (custom-set-faces
+;;  '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
+;;  '(my-tab-face ((((class color)) (:background "green"))) t)
+;;  )
+;; ; add custom font locks to all buffers and all files
+;; (add-hook
+;;  'font-lock-mode-hook
+;;  (function
+;;   (lambda ()
+;;     (setq
+;;      font-lock-keywords
+;;      (append
+;;       font-lock-keywords
+;;       '(
+;;         ("\r" (0 'my-carriage-return-face t))
+;;         ("\t" (0 'my-tab-face t))
+;;         ))))))
+
+;; ; make characters after column 80 purple
+;; (setq whitespace-style
+;;   (quote (face trailing tab-mark lines-tail)))
+;; (add-hook 'find-file-hook 'whitespace-mode)
+
+;; ; transform literal tabs into a right-pointing triangle
+;; (setq
+;;  whitespace-display-mappings ;http://ergoemacs.org/emacs/whitespace-mode.html
+;;  '(
+;;    (tab-mark 9 [9654 9] [92 9])
+;;    ;others substitutions...
+;;    ))
+
 ;; Appearance
 
-(fset 'yes-or-no-p 'y-or-n-p)  ;; only type `y` instead of `yes`
-(setq inhibit-splash-screen t) ;; no splash screen
-;; (setq-default indent-tabs-mode nil) ;; no tabs!
-;; (menu-bar-mode -1) ;; minimal chrome
-;; (tool-bar-mode -1) ;; no toolbar
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq inhibit-splash-screen t)
+(setq-default indent-tabs-mode nil)
+(menu-bar-mode -1) ;; minimal chrome
+(tool-bar-mode -1) ;; no toolbar
 (x-focus-frame nil) ;; Display on top when opened from command line
 (global-linum-mode t)
 
@@ -57,8 +95,8 @@
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
 
-(add-to-list 'default-frame-alist '(font . "PT-Mono-14"))
-(set-face-attribute 'default t :font "PT-Mono-14")
+(add-to-list 'default-frame-alist '(font . "Roboto-Mono-16"))
+(set-face-attribute 'default t :font "Roboto-Mono-16")
 
 ;; Plugins
 
@@ -106,14 +144,17 @@
 (add-hook 'js-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode)
 (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
-(setq emmet-expand-jsx-className? t) ;; default nil)    
+(setq emmet-expand-jsx-className? t) ;; default nil)
 (setq emmet-self-closing-tag-style " /") ;; default "/"
 (setq emmet-move-cursor-between-quotes t)
 (setq emmet-move-cursor-after-expanding t)
 (define-key emmet-mode-keymap [tab] 'emmet-expand-line)
 
-(load-theme 'leuven t)
+;; (load-theme 'leuven t)
+;; (load-theme 'tsdh-dark t)
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
+(load-theme 'solarized t)
 
 (setq whitespace-action '(auto-cleanup))
 (setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab))
