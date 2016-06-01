@@ -4,7 +4,7 @@
 ;; ;; MELPA
 ;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 ;;              ("marmalade" . "http://marmalade-repo.org/packages/")
-;;              ("melpa" . "http://melpa.org/packages/")))
+;;              ("melpa" . "http://stable.melpa.org/packages/")))
 
 ;; ;; interface
 ;; (setq mouse-wheel-scroll-amount '(4 ((shift) . 1))) ;; one line at a time
@@ -152,15 +152,16 @@
          base16-theme
          ; rainbow-delimiter
          ; elscreen
-         ; projectile local
+         ; projectile
          git-gutter
+         flycheck
          ; js2-mode
          linum-relative))
 
 ; Add Melpa as the default Emacs Package repository
 ; only contains a very limited number of packages
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://stable.melpa.org/packages/") t)
 
 ; Activate all the packages (in particular autoloads)
 (package-initialize)
@@ -209,8 +210,13 @@
 (setq mouse-wheel-follow-mouse 't)
 (setq scroll-step 1)
 
+; projectile
 (add-to-list 'load-path "~/.emacs.d/packages/projectile")
 (require 'projectile)
+(projectile-global-mode)
+(setq projectile-indexing-method 'native)
+(setq projectile-enable-caching t)
+(global-set-key (kbd "C-x f") 'projectile-find-file)
 
 ; javascripting
 (add-to-list 'load-path "~/.emacs.d/packages/js3-mode")
@@ -273,23 +279,26 @@
 
 ;; whitespace
 ; make carriage returns blue and tabs green
-(custom-set-faces
- '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
- '(my-tab-face ((((class color)) (:background "green"))) t)
- )
+;; (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ ;; '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
+ ;; '(my-tab-face ((((class color)) (:background "green"))) t))
 ; add custom font locks to all buffers and all files
-(add-hook
- 'font-lock-mode-hook
- (function
-  (lambda ()
-    (setq
-     font-lock-keywords
-     (append
-      font-lock-keywords
-      '(
-        ("\r" (0 'my-carriage-return-face t))
-        ("\t" (0 'my-tab-face t))
-        ))))))
+;; (add-hook
+;;  'font-lock-mode-hook
+;;  (function
+;;   (lambda ()
+;;     (setq
+;;      font-lock-keywords
+;;      (append
+;;       font-lock-keywords
+;;       '(
+;;         ("\r" (0 'my-carriage-return-face t))
+;;         ("\t" (0 'my-tab-face t))
+;;         ))))))
 
 ;; smart parens
 (add-to-list 'load-path "~/.emacs.d/packages/smartparens")
@@ -298,21 +307,32 @@
 (add-hook 'js-mode-hook #'smartparens-mode)
 
 ;; make characters after column 80 purple
-(setq whitespace-style
-  (quote (face trailing tab-mark lines-tail)))
-(add-hook 'find-file-hook 'whitespace-mode)
+;; (setq whitespace-style
+;;   (quote (face trailing tab-mark lines-tail)))
+;; (add-hook 'find-file-hook 'whitespace-mode)
 
 ;; transform literal tabs into a right-pointing triangle
-(setq
- whitespace-display-mappings ;http://ergoemacs.org/emacs/whitespace-mode.html
- '(
-   (tab-mark 9 [9654 9] [92 9])
-   ;others substitutions...
-   ))
+;; (setq
+;;  whitespace-display-mappings ;http://ergoemacs.org/emacs/whitespace-mode.html
+;;  '(
+;;    (tab-mark 9 [9654 9] [92 9])
+;;    ;others substitutions...
+;;    ))
 
+; tree
 (add-to-list 'load-path "~/.emacs.d/packages/neotree")
 (require 'neotree)
 (global-set-key (kbd "C-x C-d") 'neotree-toggle)
+
+; flycheck
+;; (add-to-list 'load-path "~/.emacs.d/packages/flycheck")
+(require 'flycheck)
+(package-install 'flycheck)
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+;; (add-hook 'js2-mode-hook
+;;           (lambda () (flycheck-mode t)))
+(add-hook 'js2-mode-hook 'flycheck-mode)
+(setq flycheck-jshintrc "~/.emacs.d/.jshintrc")
 
 ; jsdoc
 (add-to-list 'load-path "~/.emacs.d/packages/js-doc")
@@ -327,7 +347,7 @@
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'js-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode)
-(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2)))
 (setq emmet-expand-jsx-className? t) ;; default nil)
 (setq emmet-self-closing-tag-style " /") ;; default "/"
 (setq emmet-move-cursor-between-quotes t)
@@ -337,5 +357,14 @@
 ; js mode
 (setq js-indent-level 2)
 
-(setq whitespace-action '(auto-cleanup))
-(setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab))
+;; (setq whitespace-action '(auto-cleanup))
+;; (setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab))
+
+(require 'whitespace)
+(setq whitespace-style (quote (spaces tabs newline space-mark tab-mark newline-mark)))
+
+;; (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
+;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+;; (setq-default show-trailing-whitespace t)
+;; (setq whitespace-display-mappings '((space-mark 32 [?·])))
+

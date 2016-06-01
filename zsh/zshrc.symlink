@@ -1,22 +1,20 @@
 # shortcut to this dotfiles path is $ZSH
 export ZSH=$HOME/.dotfiles
 
+setopt autocd
+
 # plugins
-plugins=(tmux)
+plugins=(tmux, nvm)
+
+# nvm
+export NVM_DIR="/Users/beatty/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # user configuration
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
-PATH="$NPM_PACKAGES/bin:$PATH"
-export NVM_DIR="/Users/beatty/.nvm"
-
 # NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 # PATH="$NPM_PACKAGES/bin:$PATH"
 
-# nvm    
-export NVM_DIR="/Users/beatty/.nvm"
-[[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh  # This loads NVM
-    
 # your project folder that we can `c [tab]` to
 export PROJECTS=~/Projects
 
@@ -55,3 +53,10 @@ do
 done
 
 unset config_files
+
+# source $HOME/.nvm/nvm.sh
+# Add GHC 7.10.3 to the PATH, via https://ghcformacosx.github.io/
+export GHC_DOT_APP="/Applications/ghc-7.10.3.app"
+if [ -d "$GHC_DOT_APP" ]; then
+  export PATH="${HOME}/.local/bin:${HOME}/.cabal/bin:${GHC_DOT_APP}/Contents/bin:${PATH}"
+fi
