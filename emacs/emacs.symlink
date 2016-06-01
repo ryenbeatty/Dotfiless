@@ -1,3 +1,4 @@
+<<<<<<< 851ddb9647a14b333c2976873fe8f29e9acd17ec
 ;; ;; Ryen's emacs config
 ;; (global-git-gutter-mode +1)
 
@@ -141,8 +142,15 @@
 
 
 
+=======
+;; Ryen's emacs config
+>>>>>>> emacs good
 
+;; switch
+(c-set-offset 'case-label '+)
 
+;; Tabs
+(setq indent-line-function 'insert-tab)
 
 (require 'package)
 
@@ -202,9 +210,9 @@
 ; (setq inhibit-startup-message t)
 (setq visible-bell 'top-bottom)
 (setq x-underlineino-at-descent-line t)
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+; (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(unless (display-graphic-p) (menu-bar-mode -1))
+; (unless (display-graphic-p) (menu-bar-mode -1))
 (setq mouse-wheel-scroll-amount '(4 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil)
 (setq mouse-wheel-follow-mouse 't)
@@ -221,23 +229,46 @@
 ; javascripting
 (add-to-list 'load-path "~/.emacs.d/packages/js3-mode")
 (require 'js3-mode nil)
+
+(defun ome-js3-mode-setup ()
+  (add-hook 'js3-mode-hook
+            (lambda ()
+              (setq js3-auto-indent-p t
+                    js3-curly-indent-offset 0
+                    js3-enter-indents-newline t
+                    js3-expr-indent-offset 2
+                    js3-indent-on-enter-key t
+                    js3-lazy-commas t
+                    js3-lazy-dots t
+                    js3-lazy-operators t
+                    js3-paren-indent-offset 2
+                    js3-square-indent-offset 4)
+              (linum-mode 1)))
+
+            ;; https://github.com/Fuco1/smartparens/issues/239
+            ;; (defadvice js3-enter-key (after fix-sp-state activate)
+            ;;   (setq sp-last-operation 'sp-self-insert))
+
+            ;; (sp-local-pair 'js3-mode
+            ;;                "{"
+            ;;                nil
+            ;;                :post-handlers
+            ;;                '((ome-create-newline-and-enter-sexp js3-enter-key))))
+  (add-to-list 'ac-modes 'js3-mode))
 '(js3-auto-indent-p t)         ; it's nice for commas to right themselves.
  '(js3-enter-indents-newline t) ; don't need to push tab before typing
  '(js3-indent-on-enter-key t)   ; fix indenting before moving on
 
-;; (add-to-list 'load-path "~/.emacs.d/packages/js2-mode")
-;; (require 'js2-mode)
-;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;; (add-hook 'js2-mode-hook 'ac-js2-mode)
-;; (setq js2-highlight-level 3)
-;; (setq js-indent-level 2)
-;; (custom-set-variables
-;;  '(js2-basic-offset 2)
-;;  '(js2-bounce-indent-p t)
-;; )
 ;; auto complete mode
-;; should be loaded after yasnippet so that they can work together
+(require 'auto-complete)
 (require 'auto-complete-config)
+(global-auto-complete-mode t)
+(set-default 'ac-sources
+             '(ac-source-imenu
+               ac-source-dictionary
+               ac-source-words-in-buffer
+               ac-source-words-in-same-mode-buffers
+               ac-source-words-in-all-buffer))  
 
 ;; if the word exists in yasnippet, pressing tab will cause yasnippet to
 ;; activate, otherwise, auto-complete will
@@ -248,8 +279,15 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/base16")
 (load-theme 'base16-ocean-dark t)
 (setq-default line-spacing 4)
-(set-default-font "InputMono-Light-13")
 
+;; (set-default-font "InputMono-Light-13")
+;; (set-default-font "InputMono-Light-13")
+;; (set-default-font "SpaceMono-Regular-18")
+;; (set-default-font "Space-Mono-15")
+  
+;; (add-to-list 'default-frame-alist '(font . "SpaceMono-Regular-18" ))
+;; (set-face-attribute 'default t :font "SpaceMono-Regular-18" )  
+; AB
 (require 'powerline)
 (powerline-default-theme)
 
@@ -262,7 +300,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/rainbow-delimiters")
 (require 'rainbow-delimiters nil)
-(rainbow-delimiters-mode 1)
+;; (rainbow-delimiters-mode 1)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)  
 
 (require 'icomplete)
 
@@ -278,6 +317,7 @@
 (setq css-indent-offset 2)
 
 ;; whitespace
+<<<<<<< 851ddb9647a14b333c2976873fe8f29e9acd17ec
 ; make carriage returns blue and tabs green
 ;; (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -286,6 +326,12 @@
  ;; If there is more than one, they won't work right.
  ;; '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
  ;; '(my-tab-face ((((class color)) (:background "green"))) t))
+=======
+(custom-set-faces
+ '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
+ '(my-tab-face ((((class color)) (:background "green"))) t))
+
+>>>>>>> emacs good
 ; add custom font locks to all buffers and all files
 ;; (add-hook
 ;;  'font-lock-mode-hook
