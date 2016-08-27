@@ -1,4 +1,4 @@
-cat" Vim Basics
+" Vim Basicssss
 " ==========
 set nocompatible
 filetype off
@@ -13,8 +13,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'Chiel92/vim-autoformat'
 Plug 'Raimondi/delimitMate'
 Plug 'airblade/vim-gitgutter'
-Plug 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+" Plug 'vim-airline/vim-airline'
+" Plugin 'vim-airline/vim-airline-themes'
 Plug 'bruno-/vim-husk'
 " Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'

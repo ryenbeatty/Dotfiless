@@ -1,5 +1,5 @@
 # shortcut to this dotfiles path is $ZSH
-export ZSH=$HOME/.dotfiles
+export ZSH=$HOME/Workspace/Dotfiless
 
 setopt autocd
 
@@ -52,7 +52,7 @@ do
   source $file
 done
 
-unset config_files
+# unset config_files
 
 # source $HOME/.nvm/nvm.sh
 # Add GHC 7.10.3 to the PATH, via https://ghcformacosx.github.io/
