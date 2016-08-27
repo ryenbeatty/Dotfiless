@@ -6,3 +6,4 @@ alias cls='clear' # Good 'ol Clear Screen command
 alias gs='git status'
 alias ga='git add -u'
 alias gc='git commit'
+alias glr='git log --pretty=oneline'

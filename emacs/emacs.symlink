@@ -1,3 +1,155 @@
+;; ;; Ryen's emacs config
+;; (global-git-gutter-mode +1)
+
+;; ;; MELPA
+;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+;;              ("marmalade" . "http://marmalade-repo.org/packages/")
+;;              ("melpa" . "http://stable.melpa.org/packages/")))
+
+;; ;; interface
+;; (setq mouse-wheel-scroll-amount '(4 ((shift) . 1))) ;; one line at a time
+;;     (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+;;     (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+;;     (setq scroll-step 1) ;; keyboard scroll one line at a time
+
+;; ;; Set load path
+;; (let ((default-directory "~/.emacs.d/"))
+;;   (normal-top-level-add-subdirs-to-load-path))
+
+;; ;; emacs path
+;; (setenv "PATH" (concat (getenv "PATH") ":/Users/ryen/.npm-packages/bin"))
+;; (setq exec-path (append exec-path '("/Users/ryen/.npm-packages/bin")))
+
+;; ;; backups
+;; (setq backup-directory-alist `(("." . "~/.saves")))
+;; (setq backup-by-copying t)
+
+;; ;; switch
+;; (c-set-offset 'case-label '+)
+
+;; ;; scss
+;; (setq scss-compile-at-save nil)
+;; (setq css-indent-offset 2)
+
+;; ;; Appearance
+;; (fset 'yes-or-no-p 'y-or-n-p)
+;; (setq inhibit-splash-screen t)
+;; (setq-default indent-tabs-mode nil)
+;; (menu-bar-mode -1) ;; minimal chrome
+;; (tool-bar-mode -1) ;; no toolbar
+;; (x-focus-frame nil) ;; Display on top when opened from command line
+;; (global-linum-mode t)
+
+;; (add-to-list 'load-path "~/.emacs.d/packages/neotree")
+;; (require 'neotree)
+;; (global-set-key (kbd "C-x C-d") 'neotree-toggle)
+
+;; ; JsDoc
+;; (add-to-list 'load-path "~/.emacs.d/packages/js-doc")
+;; (require 'js-doc)
+
+;;  (add-hook 'js2-mode-hook
+;;            #'(lambda ()
+;;                (define-key js2-mode-map "\C-ci" 'js-doc-insert-function-doc)
+;;                (define-key js2-mode-map "@" 'js-doc-insert-tag)))
+
+;; ;; Backups
+;; (setq backup-directory-alist `(("." . "~/.saves")))
+;; (setq backup-by-copying t)
+
+;; ;; Tabs
+;; (setq-default indent-tabs-mode nil)
+;; (setq-default tab-width 4)
+;; (setq indent-line-function 'insert-tab)
+
+;; ;; (add-to-list 'default-frame-alist '(font . "Roboto-Mono-17"))
+;; ;; (set-face-attribute 'default t :font "Roboto-Mono-17")
+;; ;; (add-to-list 'default-frame-alist '(font . "InputMono-Light-16"))
+;; ;; (set-face-attribute 'default t :font "InputMono-Light-16")
+;; (add-to-list 'default-frame-alist '(font . "Whois-16"))
+;; (set-face-attribute 'default t :font "Whois-16")
+
+;; ;; Plugins
+
+;; ;; Web Mode
+;; (require 'web-mode)
+;; (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+
+;; ;; ;; Cocoascript
+;; (add-to-list 'auto-mode-alist '("\\.cocoascript\\'" . javascript-mode))
+
+;; ;; adjust indents for web-mode to 2 spaces
+;; (defun my-web-mode-hook ()
+;;   (setq web-mode-markup-indent-offset 2)
+;;   (setq web-mode-css-indent-offset 2)
+;;   (setq web-mode-code-indent-offset 2))
+;; (add-hook 'web-mode-hook  'my-web-mode-hook)
+
+;; (defadvice web-mode-highlight-part (around tweak-jsx activate)
+;;   (if (equal web-mode-content-type "jsx")
+;;     (let ((web-mode-enable-part-face nil))
+;;       ad-do-it)
+;;     ad-do-it))
+
+;; (require 'emmet-mode)
+
+;; ;; js mode
+;; (setq js-indent-level 2)
+
+;; ;; autopair
+;; (require 'autopair)
+;; (autopair-global-mode)
+
+;; ;; Emmet config
+;; (add-to-list 'load-path "~/emacs.d/packages/emmet-mode")
+;; (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+;; (add-hook 'js-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+;; (add-hook 'css-mode-hook  'emmet-mode)
+;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+;; (setq emmet-expand-jsx-className? t) ;; default nil)
+;; (setq emmet-self-closing-tag-style " /") ;; default "/"
+;; (setq emmet-move-cursor-between-quotes t)
+;; (setq emmet-move-cursor-after-expanding t)
+;; (define-key emmet-mode-keymap [tab] 'emmet-expand-line)
+
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/base16")
+;; (load-theme 'base16-ocean-dark t)
+;; ;; (load-theme 'leuven t)
+;; ;; (load-theme 'tsdh-dark t)
+;; ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+;; ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
+;; ;; (load-theme 'solarized t)
+;; ;; (load-theme 'atom-dark t)
+;; ;; (load-theme 'badwolf t)
+;; ;; (load-theme 'basic t)
+;; ;; (load-theme 'birds-of-paradise-plus t)
+;; ;; (load-theme 'bliss t)
+;; ;; (load-theme 'borland-blue t)
+;; ;; (load-theme 'boron t)
+
+;; (setq whitespace-action '(auto-cleanup))
+;; (setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab))
+
+;; ;; autocomplete
+;; (add-to-list 'load-path "~/.emacs.d/packages/auto-complete")
+;; (require 'auto-complete)
+
+
+
+
+
+
+
+
+
+;; switch
+(c-set-offset 'case-label '+)
+
+;; Tabs
+(setq indent-line-function 'insert-tab)
+
+(require 'package)
+
 ; List the packages you want
 (setq package-list '(
          auto-complete
@@ -62,9 +214,9 @@
 ; (setq inhibit-startup-message t)
 (setq visible-bell 'top-bottom)
 (setq x-underlineino-at-descent-line t)
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+; (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(unless (display-graphic-p) (menu-bar-mode -1))
+; (unless (display-graphic-p) (menu-bar-mode -1))
 (setq mouse-wheel-scroll-amount '(4 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil)
 (setq mouse-wheel-follow-mouse 't)
@@ -81,23 +233,46 @@
 ; javascripting
 (add-to-list 'load-path "~/.emacs.d/packages/js3-mode")
 (require 'js3-mode nil)
+
+(defun ome-js3-mode-setup ()
+  (add-hook 'js3-mode-hook
+            (lambda ()
+              (setq js3-auto-indent-p t
+                    js3-curly-indent-offset 0
+                    js3-enter-indents-newline t
+                    js3-expr-indent-offset 2
+                    js3-indent-on-enter-key t
+                    js3-lazy-commas t
+                    js3-lazy-dots t
+                    js3-lazy-operators t
+                    js3-paren-indent-offset 2
+                    js3-square-indent-offset 4)
+              (linum-mode 1)))
+
+            ;; https://github.com/Fuco1/smartparens/issues/239
+            ;; (defadvice js3-enter-key (after fix-sp-state activate)
+            ;;   (setq sp-last-operation 'sp-self-insert))
+
+            ;; (sp-local-pair 'js3-mode
+            ;;                "{"
+            ;;                nil
+            ;;                :post-handlers
+            ;;                '((ome-create-newline-and-enter-sexp js3-enter-key))))
+  (add-to-list 'ac-modes 'js3-mode))
 '(js3-auto-indent-p t)         ; it's nice for commas to right themselves.
  '(js3-enter-indents-newline t) ; don't need to push tab before typing
  '(js3-indent-on-enter-key t)   ; fix indenting before moving on
 
-;; (add-to-list 'load-path "~/.emacs.d/packages/js2-mode")
-;; (require 'js2-mode)
-;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;; (add-hook 'js2-mode-hook 'ac-js2-mode)
-;; (setq js2-highlight-level 3)
-;; (setq js-indent-level 2)
-;; (custom-set-variables
-;;  '(js2-basic-offset 2)
-;;  '(js2-bounce-indent-p t)
-;; )
 ;; auto complete mode
-;; should be loaded after yasnippet so that they can work together
+(require 'auto-complete)
 (require 'auto-complete-config)
+(global-auto-complete-mode t)
+(set-default 'ac-sources
+             '(ac-source-imenu
+               ac-source-dictionary
+               ac-source-words-in-buffer
+               ac-source-words-in-same-mode-buffers
+               ac-source-words-in-all-buffer))  
 
 ;; if the word exists in yasnippet, pressing tab will cause yasnippet to
 ;; activate, otherwise, auto-complete will
@@ -108,8 +283,15 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/base16")
 (load-theme 'base16-ocean-dark t)
 (setq-default line-spacing 4)
-(set-default-font "InputMono-Light-13")
 
+;; (set-default-font "InputMono-Light-13")
+;; (set-default-font "InputMono-Light-13")
+;; (set-default-font "SpaceMono-Regular-18")
+;; (set-default-font "Space-Mono-15")
+  
+;; (add-to-list 'default-frame-alist '(font . "SpaceMono-Regular-18" ))
+;; (set-face-attribute 'default t :font "SpaceMono-Regular-18" )  
+; AB
 (require 'powerline)
 (powerline-default-theme)
 
@@ -122,7 +304,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/rainbow-delimiters")
 (require 'rainbow-delimiters nil)
-(rainbow-delimiters-mode 1)
+;; (rainbow-delimiters-mode 1)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)  
 
 (require 'icomplete)
 
@@ -137,15 +320,10 @@
 (setq scss-compile-at-save nil)
 (setq css-indent-offset 2)
 
-;; whitespace
-; make carriage returns blue and tabs green
-;; (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;; '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
- ;; '(my-tab-face ((((class color)) (:background "green"))) t))
+(custom-set-faces
+ '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
+ '(my-tab-face ((((class color)) (:background "green"))) t))
+
 ; add custom font locks to all buffers and all files
 ;; (add-hook
 ;;  'font-lock-mode-hook
