@@ -18,6 +18,8 @@
 [core]
 	excludesfile = /Users/beatty/.gitignore
         editor = vim
+	autocrlf = false
+	eol = lf
 [apply]
         whitespace = nowarn
 [mergetool]
@@ -43,3 +45,9 @@
 	email = ryen.beatty@researchgate.net
 [pull]
 	rebase = true
+[commit]
+	template = /Users/beatty/.stCommitMsg
+[branch]
+	rebase = autosetuprebase
+[diff]
+	compactionHeuristic = true

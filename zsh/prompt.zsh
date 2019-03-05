@@ -72,9 +72,12 @@ directory_name() {
 }
 
 export PROMPT=$'\n$(directory_name) $(git_dirty)$(need_push)\nλ '
-# set_prompt () {
-#   export RPROMPT="$(rb_prompt)%{$fg_bold[cyan]%}%{$reset_color%}"
-# }
+ZSH_THEME_VIRTUALENV_PREFIX=(
+ZSH_THEME_VIRTUALENV_SUFFIX=)
+
+set_prompt () {
+  export RPROMPT="$(rb_prompt)%{$fg_bold[cyan]%}%{$reset_color%}"
+}
 
 precmd() {
   title "zsh" "%m" "%55<...<%~"
