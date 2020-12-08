@@ -1,3 +1,9 @@
+# open .zshrc in vscode TODO change to emacs
+alias change="code ~/.zshrc"
+alias update="source ~/.zshrc"
+
+SPACESHIP_CHAR_SYMBOL="λ"
+
 # shortcut to this dotfiles path is $ZSH
 export ZSH=$HOME/.dotfiles
 setopt autocd
@@ -10,14 +16,17 @@ export VIRTUALENV_PYTHON=/Users/beatty/.pyenv/shims/python3
 export VIRTUALENVWRAPPER_PYTHON=/Users/beatty/.pyenv/shims/python3
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/Workspace
-source /Users/beatty/.pyenv/versions/3.4.3/bin/virtualenvwrapper.sh
+# source /Users/beatty/.pyenv/versions/3.7.2/bin/virtualenvwrapper.sh
 
 # plugins
 plugins=(zsh-autosuggestions, tmux, nvm, zsh-syntax-highlighting, virtualenv)
 source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # editor
-export EDITOR="/Applications/Visual\ Studio\ Code.app/"
+# export EDITOR="/Applications/Visual\ Studio\ Code.app/"
+export EDITOR="/Applications/Visual Studio Code.app/Contents/MacOS/Electron"
+# export VISUAL="/Applications/Visual Studio Code.app/Contents/MacOS/Electron"
+export VISUAL=vim
 
 # user configuration
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin:$PATH
@@ -73,7 +82,7 @@ export PATH="$HOME/.yarn/bin:$PATH"
 
 # php
 # export PATH="$(brew --prefix homebrew/php/php71)/bin:$PATH"
-eval "$(rbenv init -)"
+
 # nvm
 export NVM_DIR="/Users/beatty/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -87,3 +96,48 @@ if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
 fi
 
+# Enable nice fuzzy tab completion
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+# Visualize and selecting with arrow keys in completion.
+zstyle ':completion:*' menu select
+# Ignore case in tab complete.
+# Refresh tab completion from PATH automatically, so hash(1) does not need to be called after installing a new program.
+zstyle ':completion:*' rehash true
+# Complete options for aliases too.
+setopt completealiases
+# Ignore case in tab complete.
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+autoload -Uz compinit
+compinit
+ 
+  
+# Enable colors
+autoload -U colors && colors
+
+# Command history
+export HISTSIZE=1000000                        # How many lines in the current session to remember.
+export SAVEHIST=1000000                        # How many lines to save to disk. Must be <=HISTSIZE.
+setopt appendhistory                               # Append to history write on exit, don't overwrite.
+bindkey "^R" history-beginning-search-backward # Complete from history with prefix
+bindkey "^E" history-beginning-search-forward  # Complete from history with prefix[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
+eval "$(rbenv init -)"
+
+# Set Spaceship ZSH as a prompt
+autoload -U promptinit; promptinit
+prompt spaceship
+
+# Uses the zsh precmd function hook to set the tab title to the current working directory before each prompt
+# function precmd () {
+#   window_title="\\033]0;${PWD##*/}\\007"
+#   echo -ne "$window_title"
+# }PATH=/Users/beatty/Workbench/community/bin:$PATH
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+source /Users/beatty/Workbench/community/bin/../generated/cde/data/auto-completion-script.sh

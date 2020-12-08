@@ -1,264 +1,237 @@
-;; switch
-(c-set-offset 'case-label '+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Section I: Generic settings                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Tabs
-(setq indent-line-function 'insert-tab)
+;; The following 3 lines disable unnecessary GUI elements, in this case the
+;; menu bar, the tool bar and the scroll bar. If you wish, you can comment out
+;; the menu-bar and keep it, but eventually I recommend you disable it.
 
-(require 'package)
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-; List the packages you want
-(setq package-list '(
-         auto-complete
-         base16-theme
-         ; rainbow-delimiter
-         elscreen
-         projectile
-         powerline
-         git-gutter
-         smartparens
-         ;; jshint
-         ;; elm-mode
-         flycheck
-         js3-mode
-         haskell-mode
-         linum-relative))
+;; Sometimes the mini-buffer becomes multi-line, and it can be a bit annoying as
+;; you type in it. This makes it stay one line.
 
-; Add Melpa as the default Emacs Package repository
-; only contains a very limited number of packages
-;;(add-to-list 'package-archives
-;;             '("melpa" . "http://stable.melpa.org/packages/") t)
+(setq resize-mini-windows nil)
+
+;; We don't need the Emacs splash screen. You can keep it on if you're into
+;; that sort of thing
+
+;; (setq inhibit-splash-screen t)
+
+;;; global-linum-mode adds line numbers to all open windows, In my opinion
+;;; there is no reason not to have this enabled.
+
+(global-linum-mode)
+
+;;; Emacs comes with a built-in text based browser. Since I use the browse-url
+;;; function most often to browse documentation, I've set it to eww, the Emacs
+;;; Web Browser. It works well for that purpose. If you would prefer to use a
+;;; graphical browser, you can change this line.
+
+(setq browse-url-browser-function 'eww-browse-url)
+
+;; Show matching parentecies globaly.
+
+(show-paren-mode 1)
+
+;; Use UTF-8 by default
+(set-language-environment "UTF-8")
+
+;; Don't ring the bell. It saves some annoyance
+
+(setq ring-bell-function 'ignore)
+
+;; If you're one of the heathens who prefers tabs over spaces, you should
+;; remove the following line. It makes indentation use spaces.
+(setq-default indent-tabs-mode nil)
+
+;;; A simple backup setup. Makes sure I don't foo~ and #.foo files in
+;;; directories with files you edit.
+
+(setq
+ backup-by-copying t      ; don't clobber symlinks-
+ backup-directory-alist
+ '(("." . "~/.saves"))    ; don't litter my fs tree
+ auto-save-file-name-transforms
+ `((".*" ,temporary-file-directory t))
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)       ; use versioned backups
+
+
+;; Set up emacs server. This allows you to run emacs in the background and
+;; connect to it with emacs client. It reduces startup time significantly. If
+;; the server is not running, it starts it.
+
+(load "server")
+
+(unless (server-running-p)
+  (server-start))
+
+;;; ido-mode, or Interactively DO mode, adds lots of improvements when working
+;;; with buffers of files. You can read more about it at:
+;;; https://www.emacswiki.org/emacs-test/InteractivelyDoThings
+(require 'ido)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+(setq ido-use-filename-at-point 'guess)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Section II: Packages                                                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Elpa, the default package repository for emacs is fairly conservative, so
+;; we'll add the melpa and marbaraie repositories
 (require 'package)
 (add-to-list 'package-archives
-	                  '("melpa" . "http://melpa.org/packages/") t)
+  '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-; Activate all the packages (in particular autoloads)
-(package-initialize)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.org/packages/") t)
 
-; Update your local package index
-(unless package-archive-contents
-  (package-refresh-contents))
+;; You can install packages by typing M-x package-install <package-name>. I
+;; recomend you install the following packages: smex, which adds an improved
+;; version of M-x. I highly recomend this. You can read more about smex at:
+;; https://github.com/nonsequitur/smex/
 
-; Install all missing packages
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
+;; Another ofthen used mode is magit, which is an interface to git, allowing
+;; you to manage your repos through emacs. You can read more about it at:
+;; http://magit.vc/ It is one of the most useful modes available for emacs
 
-; Elscreen
-;; (elscreen-start)
-;; (elscreen-set-prefix-key "\C-b")
+(setq package-selected-packages
+  '(async
+  epl
+  ;; evil
+  goto-chg
+  ;; helm
+  ;; helm-ag
+  ;; helm-core
+  ;; helm-descbinds
+  ;; helm-projectile
+  pkg-info
+  ;; indium
+  js-mode
+  js2-mode
+  popup
+  projectile
+  undo-tree
+  auto-complete
+  base16-theme
+  rainbow-delimiter
+  elscreen
+  projectile
+  powerline
+  git-gutter
+  smartparens
+  flycheck
+  ;; js3-mode
+  linum-relative))
 
-; Linum
-(require 'linum-relative)
+(package-initialize)  
+(package-install-selected-packages)
 
-; Always ALWAYS use UTF-8
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-(load-library "iso-transl")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Section III: Global Key Bindings                                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; Automatically save buffers before compiling
-(setq compilation-ask-about-save nil)
+;; By default C-x o is bound to 'other window, but I find I use it much more
+;; ofther than open-line, which is bound to C-o, so I swap their definitions
+;; (global-set-key (kbd "C-o") 'other-window)
+;; (global-set-key (kbd "C-x o") 'open-line)
 
-; Always ask for y/n keypress instead of typing out 'yes' or 'no'
-(defalias 'yes-or-no-p 'y-or-n-p)
+;; M-0..3 are bound to 'digit-argument. To be used with C-u. I don't use them
+;; ofthen, so I prefer to rebind them to the window commands, since M-1 is
+;; easyer to type than C-x 1. 
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-2") 'split-window-vertically)
+(global-set-key (kbd "M-3") 'split-window-horizontally)
+(global-set-key (kbd "M-0") 'delete-window)
 
-; General UI stuff
-(global-linum-mode t)
-(global-hl-line-mode t)
-(setq-default indent-tabs-mode nil)
-(setq default-tab-width 2)
-; (setq inhibit-startup-message t)
-(setq visible-bell 'top-bottom)
-(setq x-underlineino-at-descent-line t)
-; (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-; (unless (display-graphic-p) (menu-bar-mode -1))
-(setq mouse-wheel-scroll-amount '(4 ((shift) . 1)))
-(setq mouse-wheel-progressive-speed nil)
-(setq mouse-wheel-follow-mouse 't)
-(setq scroll-step 1)
+;; Set the enter key to newline-and-indent which inserts a new line and then
+;; indents according to the major mode. This is very convenient. 
+(global-set-key (kbd "<RET>") 'newline-and-indent)
 
-; projectile
-(add-to-list 'load-path "~/.emacs.d/packages/projectile")
-(require 'projectile)
-(projectile-global-mode)
-(setq projectile-indexing-method 'native)
-(setq projectile-enable-caching t)
-(global-set-key (kbd "C-x f") 'projectile-find-file)
+;; If you have installed smex with M-x package-install smex, you can uncomment
+;; the following lines. To activate it without restarting Emacs select the
+;; lines and type M-x eval-region:
 
-; javascripting
-(add-to-list 'load-path "~/.emacs.d/packages/js3-mode")
-(require 'js3-mode nil)
+;; (require 'smex)
 
-(defun ome-js3-mode-setup ()
-  (add-hook 'js3-mode-hook
-            (lambda ()
-              (setq js3-auto-indent-p t
-                    js3-curly-indent-offset 0
-                    js3-enter-indents-newline t
-                    js3-expr-indent-offset 2
-                    js3-indent-on-enter-key t
-                    js3-lazy-commas t
-                    js3-lazy-dots t
-                    js3-lazy-operators t
-                    js3-paren-indent-offset 2
-                    js3-square-indent-offset 4)
-              (linum-mode 1)))
+;; (global-set-key (kbd "M-x") 'smex) 
+;; (global-set-key (kbd "M-X") 'smex-major-mode-commands) 
+;; (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
-            ;; https://github.com/Fuco1/smartparens/issues/239
-            ;; (defadvice js3-enter-key (after fix-sp-state activate)
-            ;;   (setq sp-last-operation 'sp-self-insert))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Section IV: Appearance                                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-            ;; (sp-local-pair 'js3-mode
-            ;;                "{"
-            ;;                nil
-            ;;                :post-handlers
-            ;;                '((ome-create-newline-and-enter-sexp js3-enter-key))))
-  (add-to-list 'ac-modes 'js3-mode))
-'(js3-auto-indent-p t)         ; it's nice for commas to right themselves.
- '(js3-enter-indents-newline t) ; don't need to push tab before typing
- '(js3-indent-on-enter-key t)   ; fix indenting before moving on
+;; Fullscreen
+(custom-set-variables
+ '(initial-frame-alist (quote ((fullscreen . maximized)))))
 
-;; auto complete mode
-(require 'auto-complete)
-(require 'auto-complete-config)
-(global-auto-complete-mode t)
-(set-default 'ac-sources
-             '(ac-source-imenu
-               ac-source-dictionary
-               ac-source-words-in-buffer
-               ac-source-words-in-same-mode-buffers
-               ac-source-words-in-all-buffer))
-
-;; if the word exists in yasnippet, pressing tab will cause yasnippet to
-;; activate, otherwise, auto-complete will
-(ac-set-trigger-key "TAB")
-(ac-set-trigger-key "<tab>")
-
-;; Theme
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/base16")
-(load-theme 'base16-ocean-dark t)
+;; Theme (M-x customize-themes)
+(load-theme 'base16-black-metal t)
 (setq-default line-spacing 4)
 
-;; (set-default-font "InputMono-Light-13")
-;; (set-default-font "InputMono-Light-13")
-;; (set-default-font "SpaceMono-Regular-18")
-;; (set-default-font "Space-Mono-15")
+;; Font
+(set-default-font "Space Mono")
 
-;; (add-to-list 'default-frame-alist '(font . "SpaceMono-Regular-18" ))
-;; (set-face-attribute 'default t :font "SpaceMono-Regular-18" )
+;; Font Size
+;; (set-face-attribute 'default nil :height 95)
+
 ; AB
-(require 'powerline)
-(powerline-default-theme)
+;; (require 'powerline)
+;; (powerline-default-theme)
 
-(require 'git-gutter)
-(global-git-gutter-mode t)
+;; (require 'git-gutter)
+;; (global-git-gutter-mode t)
 
-(add-to-list 'load-path "~/.emacs.d/packages/smartparens")
+
+;; Projectile
+(require 'projectile)
+(projectile-mode 1)
+(setq projectile-project-search-path '("~/Workbench/"))
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+;; Indium
+(require 'indium)
+
+;; JS Mode
+(require 'js2-mode)
+(add-hook 'js-mode-hook 'js2-minor-mode) 
+;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; (setq js2-mode-show-parse-errors nil
+;;         js2-mode-show-strict-warnings nil
+;;         js2-basic-offset 2
+;;         js-indent-level 2)
+
+;; Better imenu
+;; (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+
+;; Parens
+;; (show-paren-mode 1)
+
+;; (electric-pair-mode 1)
+;; (defun my-electric-pair-post-self-insert-function (orig-fun)
+;;   (let ((indent-after (and (eq last-command-event ?\n)
+;;                            (< (1+ (point-min)) (point) (point-max))
+;;                            (eq (save-excursion
+;;                                  (skip-chars-backward "\t\s")
+;;                                 ;;  (char-before (1- (point)
+;;                                  )))
+;;                                (matching-paren (char-after))))))
+;;     (apply orig-fun nil)
+;;     (when indent-after
+;;       (indent-according-to-mode)
+;;       (save-excursion
+;;         (forward-line 1)
+;;         (indent-according-to-mode)))))
+;; (advice-add 'electric-pair-post-self-insert-function :around #'my-electric-pair-post-self-insert-function)
 (require 'smartparens-config)
-(add-hook 'js-mode-hook #'smartparens-mode)
 
-(add-to-list 'load-path "~/.emacs.d/packages/rainbow-delimiters")
-(require 'rainbow-delimiters nil)
-;; (rainbow-delimiters-mode 1)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-(require 'icomplete)
-
-;; backups
-(setq backup-directory-alist `(("." . "~/.saves")))
-(setq backup-by-copying t)
-
-;; switch
-(c-set-offset 'case-label '+)
-
-;; scss
-(setq scss-compile-at-save nil)
-(setq css-indent-offset 2)
-
-;; whitespace
-(custom-set-faces
- '(my-carriage-return-face ((((class color)) (:background "blue"))) t)
- '(my-tab-face ((((class color)) (:background "green"))) t))
-
-; add custom font locks to all buffers and all files
-;; (add-hook
-;;  'font-lock-mode-hook
-;;  (function
-;;   (lambda ()
-;;     (setq
-;;      font-lock-keywords
-;;      (append
-;;       font-lock-keywords
-;;       '(
-;;         ("\r" (0 'my-carriage-return-face t))
-;;         ("\t" (0 'my-tab-face t))
-;;         ))))))
-
-;; smart parens
-(add-to-list 'load-path "~/.emacs.d/packages/smartparens")
-(require 'smartparens-config)
 ;; Always start smartparens mode in js-mode.
 (add-hook 'js-mode-hook #'smartparens-mode)
-
-; make characters after column 80 purple
-(setq whitespace-style
-  (quote (face trailing tab-mark lines-tail)))
-(add-hook 'find-file-hook 'whitespace-mode)
-
-; transform literal tabs into a right-pointing triangle
-(setq
- whitespace-display-mappings ;http://ergoemacs.org/emacs/whitespace-mode.html
- '(
-   (tab-mark 9 [9654 9] [92 9])
-   ;others substitutions...
-   ))
-
-; tree
-(add-to-list 'load-path "~/.emacs.d/packages/neotree")
-(require 'neotree)
-(global-set-key (kbd "C-x C-d") 'neotree-toggle)
-
-; flycheck
-;; (add-to-list 'load-path "~/.emacs.d/packages/flycheck")
-(require 'flycheck)
-(package-install 'flycheck)
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-;; (add-hook 'js2-mode-hook
-;;           (lambda () (flycheck-mode t)))
-(add-hook 'js2-mode-hook 'flycheck-mode)
-(setq flycheck-jshintrc "~/.emacs.d/.jshintrc")
-
-; jsdoc
-(add-to-list 'load-path "~/.emacs.d/packages/js-doc")
-(require 'js-doc)
-
-; cocoascript
-(add-to-list 'auto-mode-alist '("\\.cocoascript\\'" . javascript-mode))
-
-; emmet
-(require 'emmet-mode)
-(add-to-list 'load-path "~/emacs.d/packages/emmet-mode")
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'js-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode)
-(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2)))
-(setq emmet-expand-jsx-className? t) ;; default nil)
-(setq emmet-self-closing-tag-style " /") ;; default "/"
-(setq emmet-move-cursor-between-quotes t)
-(setq emmet-move-cursor-after-expanding t)
-(define-key emmet-mode-keymap [tab] 'emmet-expand-line)
-
-; js mode
-(setq js-indent-level 2)
-
-;; (setq whitespace-action '(auto-cleanup))
-;; (setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab))
-
-(require 'whitespace)
-(setq whitespace-style (quote (spaces tabs newline space-mark tab-mark newline-mark)))
-
-;; (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
-;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
-;; (setq-default show-trailing-whitespace t)
-;; (setq whitespace-display-mappings '((space-mark 32 [?·])))
